@@ -1,0 +1,13 @@
+# This file contains fish universal variable definitions.
+# VERSION: 3.0
+SETUVAR --export GBM_BACKEND:nvidia\x2ddrm
+SETUVAR --export VK_ICD_FILENAMES:/usr/share/vulkan/icd\x2ed/nvidia_icd\x2ejson
+SETUVAR --export WLR_NO_HARDWARE_CURSORS:1
+SETUVAR --export WLR_RENDERER:vulkan
+SETUVAR --export __GLX_VENDOR_LIBRARY_NAME:nvidia
+SETUVAR --export __GL_VRR_ALLOWED:1
+SETUVAR __fish_initialized:4300
+SETUVAR fish_color_command:magenta
+SETUVAR fish_color_param:blue
+SETUVAR fish_greeting:\x1d
+SETUVAR fish_user_paths:/home/walk/\x2econfig/composer/vendor/bin\x1e/home/walk/\x2ecargo/bin
