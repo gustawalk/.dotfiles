@@ -1,0 +1,3 @@
+# Fish writes universal variables for the current machine.
+fish/fish_variables
+nvim.log

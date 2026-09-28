@@ -1,4 +1,6 @@
-pokemon-colorscripts --no-title -rn haunter,gengar,sylveon,vaporeon,eevee,fennekin
+if command -q pokemon-colorscripts
+    pokemon-colorscripts --no-title -rn haunter,gengar,sylveon,vaporeon,eevee,fennekin
+end
 
 # Settings {{{
 set -U fish_greeting
@@ -7,9 +9,13 @@ set -U fish_color_param blue
 set -x PATH /usr/local/bin /usr/bin /bin /usr/sbin /sbin $PATH
 
 set -gx CONFIG_DIR "$HOME/.config/"
-set -gx DOTFILES_DIRECTORY "$HOME/dotfiles"
+set -gx DOTFILES_DIRECTORY "$HOME/.dotfiles"
 set -gx ASDF_CONFIG_FILE "$HOME/.config/asdf/asdfrc"
-set -gx RIPGREP_CONFIG_PATH "$HOME/.config/ripgrep/ripgreprc"
+if test -f "$HOME/.config/ripgrep/ripgreprc"
+    set -gx RIPGREP_CONFIG_PATH "$HOME/.config/ripgrep/ripgreprc"
+else
+    set -e RIPGREP_CONFIG_PATH
+end
 set -gx FZF_DEFAULT_OPTS '--height=50% --layout=reverse'
 set -gx FZF_DEFAULT_COMMAND 'rg --files --no-ignore-vcs --hidden'
 set -gx SHELL (which fish)
@@ -60,9 +66,8 @@ abbr upup 'sudo pacman -Syu --noconfirm'
 
 # vim / vim-isms
 abbr v "$EDITOR ."
-abbr vip "$EDITOR +PackerInstall +qall"
-abbr vup "$EDITOR +PackerUpdate"
-abbr vcp "$EDITOR +PackerClean +qall"
+abbr vip "nvim '+Lazy sync'"
+abbr vup "nvim '+Lazy update'"
 # }}}
 
 # Utility functions {{{
@@ -152,9 +157,15 @@ end
 # }}}
 
 # pnpm
-set -gx PNPM_HOME "/home/walk/.local/share/pnpm"
+set -gx PNPM_HOME "$HOME/.local/share/pnpm"
 if not string match -q -- $PNPM_HOME $PATH
   set -gx PATH "$PNPM_HOME" $PATH
 end
 # pnpm end
-export PATH="$HOME/.local/bin:$PATH"
+fish_add_path "$HOME/.local/bin"
+
+# opencode
+if test -d "$HOME/.opencode/bin"
+    fish_add_path "$HOME/.opencode/bin"
+end
+set -gx POKEMON_ICAT_DATA "$HOME/.local/share/pokemon-icat"
