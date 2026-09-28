@@ -1,6 +1,19 @@
 # tmux for programming
 
-The config is `~/.config/tmux/tmux.conf` and uses a Tokyo Night dark palette. Start with `tmux new -s project`; later use `tmux attach -t project`. Sessions are managed manually.
+The config is `~/.config/tmux/tmux.conf` and uses a Tokyo Night dark palette. Start with `tmux new -s project`; later use `tmux attach -t project`.
+
+## Save sessions across reboots
+
+Install [tmux-resurrect](https://github.com/tmux-plugins/tmux-resurrect) once:
+
+```sh
+git clone https://github.com/tmux-plugins/tmux-resurrect.git ~/.config/tmux/plugins/tmux-resurrect
+tmux source-file ~/.config/tmux/tmux.conf
+```
+
+Before rebooting, press **Ctrl+b**, then **Ctrl+s** to save. After rebooting, start tmux (`tmux` or `tmux new -s project`) and press **Ctrl+b**, then **Ctrl+r** to restore. These shortcuts also work with the secondary **Ctrl+a** prefix. A save includes all current sessions, window names and order, pane arrangement and sizes, active panes, and each pane's working directory. Restore into a fresh tmux server for the closest match.
+
+Tmux-resurrect restores common terminal programs such as Neovim by default, but it does not preserve a program's in-memory state or restore arbitrary commands unless configured separately. Save files live in tmux-resurrect's data directory (usually `~/.local/share/tmux/resurrect` or `~/.tmux/resurrect`). To check that a save exists, run `ls -l ~/.local/share/tmux/resurrect/last ~/.tmux/resurrect/last 2>/dev/null`.
 
 For a tmux server that was already running when this file was added, run `tmux source-file ~/.config/tmux/tmux.conf` once to load it.
 
@@ -29,6 +42,7 @@ The dim dot beside the session name turns amber while tmux is waiting for the ne
 | `Ctrl+b w` | Show the window and pane tree |
 | `Ctrl+b [` | Enter scroll and copy mode; use `v` to select and `y` to copy |
 | `Ctrl+b d` | Detach from the session |
+| `Ctrl+b Ctrl+s` / `Ctrl+b Ctrl+r` | Save all sessions / restore the last save |
 | `Ctrl+b R` | Reload this configuration |
 
 Mouse selection and scrolling are enabled. The `y` copy shortcut uses `wl-copy`; install `wl-clipboard` on Wayland. For another clipboard provider, change that command in `tmux.conf`. Your terminal should support `tmux-256color` and true color for the intended appearance.
