@@ -1,7 +1,6 @@
 #!/bin/bash
 # This script is used to play system sounds.
-# Script is used by Volume.Sh and ScreenShots.sh 
-
+# Script is used by Volume.Sh and ScreenShots.sh
 theme="freedesktop" # Set the theme for the system sounds.
 mute=false          # Set to true to mute the system sounds.
 
@@ -35,42 +34,29 @@ else
     exit 0
 fi
 
-# Set the directory defaults for system sounds.
-if [ -d "/run/current-system/sw/share/sounds" ]; then
-    systemDIR="/run/current-system/sw/share/sounds" # NixOS
-else
-    systemDIR="/usr/share/sounds"
-fi
-userDIR="$HOME/.local/share/sounds"
-defaultTheme="freedesktop"
-
-# Prefer the user's theme, but use the system's if it doesn't exist.
-sDIR="$systemDIR/$defaultTheme"
-if [ -d "$userDIR/$theme" ]; then
-    sDIR="$userDIR/$theme"
-elif [ -d "$systemDIR/$theme" ]; then
-    sDIR="$systemDIR/$theme"
-fi
-
-# Get the theme that it inherits.
-iTheme=$(cat "$sDIR/index.theme" | grep -i "inherits" | cut -d "=" -f 2)
-iDIR="$sDIR/../$iTheme"
-
-# Find the sound file and play it.
-sound_file=$(find -L $sDIR/stereo -name "$soundoption" -print -quit)
-if ! test -f "$sound_file"; then
-    sound_file=$(find -L $iDIR/stereo -name "$soundoption" -print -quit)
-    if ! test -f "$sound_file"; then
-        sound_file=$(find -L $userDIR/$defaultTheme/stereo -name "$soundoption" -print -quit)
-        if ! test -f "$sound_file"; then
-            sound_file=$(find -L $systemDIR/$defaultTheme/stereo -name "$soundoption" -print -quit)
-            if ! test -f "$sound_file"; then
-                echo "Error: Sound file not found."
-                exit 1
-            fi
-        fi
+# Look in user, checked-in, and system sound themes, in that order.
+sound_file=''
+for directory in \
+    "$HOME/.local/share/sounds/$theme/stereo" \
+    "$HOME/.config/hypr/UserSounds/$theme/stereo" \
+    "/usr/share/sounds/$theme/stereo" \
+    "/run/current-system/sw/share/sounds/$theme/stereo"; do
+    if [[ -d "$directory" ]]; then
+        sound_file=$(find -L "$directory" -name "$soundoption" -print -quit)
+        [[ -z "$sound_file" ]] || break
     fi
+done
+
+if [[ -z "$sound_file" ]]; then
+    echo 'Error: Sound file not found.' >&2
+    exit 1
 fi
 
-# pipewire priority, fallback pulseaudio
-pw-play "$sound_file" || pa-play "$sound_file"
+if command -v pw-play >/dev/null 2>&1; then
+    pw-play "$sound_file"
+elif command -v paplay >/dev/null 2>&1; then
+    paplay "$sound_file"
+else
+    echo 'Install PipeWire or PulseAudio playback tools.' >&2
+    exit 1
+fi

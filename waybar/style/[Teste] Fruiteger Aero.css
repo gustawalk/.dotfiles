@@ -40,7 +40,7 @@ tooltip label {
 }
 
 #custom-os_btn {
-  background-image: url("/home/walk/.config/swaync/icons/win7logo.png");
+  background-image: url("../../swaync/icons/win7logo.png");
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
@@ -50,7 +50,7 @@ tooltip label {
   transition: 0.2s;
 }
 #custom-os_btn:hover {
-  background-image: url("/home/walk/.config/swaync/icons/win7logohover.png");
+  background-image: url("../../swaync/icons/win7logohover.png");
   transition: 0.2s;
 }
 

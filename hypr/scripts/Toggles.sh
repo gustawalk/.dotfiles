@@ -3,6 +3,7 @@
 FLAGS_DIR="$HOME/.config/hypr/flags"
 ICONS_DIR="$HOME/.config/swaync/icons"
 SOUNDS_DIR="$HOME/.config/hypr/UserSounds"
+SCRIPTS_DIR="$HOME/.config/hypr/UserScripts"
 
 mkdir -p "$FLAGS_DIR"
 
@@ -76,11 +77,7 @@ for flag_file in "${!FLAGS_NAMES[@]}"; do
             play -q -v 0.1 "$SOUNDS_DIR/video_game_select.mp3" &
         fi
         if [[ "$selected_name" == "Replay Buffer" ]]; then
-            if systemctl --user is-active --quiet gpu-screen-recorder.service; then
-                systemctl --user stop gpu-screen-recorder.service
-            else
-                systemctl --user start --now gpu-screen-recorder.service
-            fi
+            (exec "$SCRIPTS_DIR/ToggleBuffer.sh")
         fi
         break
     fi

@@ -1,4 +1,3 @@
-
 /* My Mostly Used waybar config incase you wonder :) */
 {
 "include": [
@@ -33,6 +32,7 @@
   "custom/capslock",
   "custom/keyboard",
   "custom/separator#dot-line",
+
 	"hyprland/workspaces#rw",
 	"custom/separator#dot-line",
 	"group/notify",

@@ -1,3 +1,4 @@
+//* ---- 💫 https://github.com/JaKooLit 💫 ---- *//
 /* Waybar Workspaces modules */
 
 /* Generally, this is a potential expanding of choices for hyprland/workspace */
@@ -67,13 +68,12 @@
 },
 // Kanji / Japanese style
 "hyprland/workspaces#kanji": {
-  "active-only": false,
-	"show-special": true,
+	"disable-scroll": true,
+	"show-special": false,
 	"all-outputs": true,
 	"format": "{icon}",
     "persistent-workspaces": {
-      "DP-1": 5,
-      "*": 5,
+      "*": 5
 	},
 	"format-icons": {
 		"1": "一",
@@ -86,7 +86,6 @@
 		"8": "八",
 		"9": "九",
 		"10": "十",
-    "11": "十一",
 	}
 },
 // for Camilla or Spanish
@@ -177,38 +176,31 @@
 	"on-scroll-up": "hyprctl dispatch workspace e+1",
 	"on-scroll-down": "hyprctl dispatch workspace e-1",
 	"persistent-workspaces": {
-		"*": 5,
+		"*": 5
 	  },
-	"format": "{icon} {windows}",
-  "format-icons": {
-    "1": "一",
-    "2": "二",
-    "3": "三",
-    "4": "四",
-    "5": "五",
-    "6": "六",
-    "7": "七",
-    "8": "八",
-    "9": "九",
-    "10": "十",
+	"format-icons": {
+		"1": "一",
+		"2": "二",
+		"3": "三",
+		"4": "四",
+		"5": "五",
+		"6": "六",
+		"7": "七",
+		"8": "八",
+		"9": "九",
+		"10": "十",
     "11": "十一",
-    "12": "十二",
-    "13": "十三",
-    "14": "十四",
-    "15": "十五",
-    "16": "十六",
-    "17": "十七",
-    "18": "十八",
-    "19": "十九",
-    "20": "二十"
-  },
+    "12": "十二"
+	},
+	"format": "{icon} {windows}",
 	"format-window-separator": " ",
-	"window-rewrite-default": "謎",
+	"window-rewrite-default": "謎 ",
 	"window-rewrite": {
 		"title<.*amazon.*>": " ",
 		"title<.*reddit.*>": " ",
+    "title<.*awful.*>": " ",
 		"class<firefox|org.mozilla.firefox|librewolf|floorp|mercury-browser|[Cc]achy-browser>": " ",
-		"class<zen>": "󰰷 ",
+    "class<zen%-browser|zen>": " ",
 		"class<waterfox|waterfox-bin>": " ",
 		"class<microsoft-edge>": " ",
 		"class<Chromium|Thorium|[Cc]hrome>": " ",
@@ -239,7 +231,6 @@
 		"title<.*qwen.*>": "󰚩 ",
 		"class<subl>": "󰅳 ",
 		"class<slack>": " ",
-
 		"class<mpv>": " ",
 		"class<celluloid|Zoom>": " ",
 		"class<Cider>": "󰎆 ",
@@ -265,7 +256,7 @@
 		"class<libreoffice-calc>": " ",
 		"title<.*nvim ~.*>": " ",
 		"title<.*vim.*>": " ",
-		"title<.*nvim.*>": "  ",
+		"title<.*nvim.*>": " ",
 		"title<.*figma.*>": " ",
 		"title<.*jira.*>": " ",
 		"class<jetbrains-idea>": " ",
