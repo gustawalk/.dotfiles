@@ -119,8 +119,8 @@ case "$os" in
     ;;
   macos)
     if $core; then add_packages git ripgrep fd fzf jq fish tmux; fi
-    if $editor; then add_packages git curl ripgrep neovim node; fi
-    if $languages; then add_packages llvm rust; fi
+    if $editor; then add_packages git ripgrep neovim node; fi
+    if $languages; then add_packages clang-format rust; fi
     ;;
 esac
 
