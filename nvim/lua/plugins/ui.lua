@@ -6,6 +6,10 @@ return {
   { 'EdenEast/nightfox.nvim', lazy = false, priority = 996 },
   { 'ellisonleao/gruvbox.nvim', lazy = false, priority = 995 },
   { 'tanvirtin/monokai.nvim', lazy = false, priority = 994 },
+  { 'rose-pine/neovim', name = 'rose-pine', lazy = false, priority = 993 },
+  { 'neanias/everforest-nvim', lazy = false, priority = 992 },
+  { 'Mofiqul/dracula.nvim', lazy = false, priority = 991 },
+  { 'scottmckendry/cyberdream.nvim', lazy = false, priority = 990 },
   {
     'folke/which-key.nvim',
     event = 'VeryLazy',

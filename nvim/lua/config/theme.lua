@@ -25,8 +25,16 @@ local themes = {
   'monokai_pro',
   'monokai_soda',
   'monokai_ristretto',
+  'rose-pine-main',
+  'rose-pine-moon',
+  'rose-pine-dawn',
+  'everforest',
+  'dracula',
+  'dracula-soft',
+  'cyberdream',
 }
 local state_file = vim.fn.stdpath('state') .. '/theme'
+local active_theme
 
 local function apply(name, remember)
   if not vim.tbl_contains(themes, name) then
@@ -38,6 +46,7 @@ local function apply(name, remember)
     vim.notify('Could not load theme ' .. name .. ': ' .. err, vim.log.levels.ERROR)
     return false
   end
+  active_theme = name
   if remember then
     vim.fn.mkdir(vim.fn.stdpath('state'), 'p')
     vim.fn.writefile({ name }, state_file)
@@ -46,18 +55,18 @@ local function apply(name, remember)
 end
 
 local function preview_picker()
-  local original = vim.g.colors_name
+  local original = active_theme or vim.g.colors_name
   local buffer = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_lines(buffer, 0, -1, false, themes)
   vim.bo[buffer].modifiable = false
   local width = 28
-  local height = #themes
+  local height = math.min(#themes, math.max(1, vim.o.lines - 4))
   local window = vim.api.nvim_open_win(buffer, true, {
     relative = 'editor',
     row = math.max(0, math.floor((vim.o.lines - height) / 2) - 1),
     col = math.max(0, vim.o.columns - width - 3),
     width = width,
-    height = math.min(height, vim.o.lines - 4),
+    height = height,
     border = 'rounded',
     title = ' Theme preview ',
     style = 'minimal',
@@ -84,7 +93,11 @@ local function preview_picker()
     callback = function()
       if not committed and original then
         vim.schedule(function()
-          apply(original, false)
+          if vim.tbl_contains(themes, original) then
+            apply(original, false)
+          else
+            pcall(vim.cmd.colorscheme, original)
+          end
         end)
       end
     end,
@@ -102,6 +115,11 @@ local function preview_picker()
 end
 
 function M.setup()
+  vim.api.nvim_create_autocmd('ColorScheme', {
+    callback = function(event)
+      active_theme = vim.tbl_contains(themes, event.match) and event.match or nil
+    end,
+  })
   local saved = vim.fn.filereadable(state_file) == 1 and vim.fn.readfile(state_file)[1] or nil
   apply(vim.tbl_contains(themes, saved) and saved or 'tokyonight-night', false)
   vim.api.nvim_create_user_command('Theme', function(opts)
