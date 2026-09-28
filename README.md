@@ -15,7 +15,7 @@ The prompts cover shell tools, Neovim and Node.js, optional C/Rust tools, and (o
 
 Neovim needs **0.12 or newer**. The installer checks the installed version and warns if a distribution package is too old; in that case install a current [Neovim release](https://neovim.io/) before using this config. The included Arch bundle installs a Nerd Font. On other systems, install a Nerd Font in the terminal separately or set `vim.g.have_nerd_font = false` in `nvim/init.lua`.
 
-The macOS route needs [Homebrew](https://docs.brew.sh/Installation) and Xcode Command Line Tools already installed. Hyprland and its desktop dependencies are offered on Arch only. Optional applications invoked by individual desktop scripts (such as AGS, a browser, and a wallpaper picker) may need separate installation and setup.
+The macOS route needs [Homebrew](https://docs.brew.sh/Installation) and Xcode Command Line Tools already installed. Its optional language group installs C formatting and Rust tools; the GDB debug setup in the Neovim config is for Linux. Hyprland and its desktop dependencies are offered on Arch only. Optional applications invoked by individual desktop scripts (such as AGS, a browser, and a wallpaper picker) may need separate installation and setup.
 
 For Neovim's language servers and formatters, see [nvim/DEPENDENCIES.md](nvim/DEPENDENCIES.md). On Debian/Ubuntu the `fd-find` binary is named `fdfind`; Neovim still works without the optional `fd` command.
 
