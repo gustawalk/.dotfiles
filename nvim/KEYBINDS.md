@@ -17,7 +17,7 @@
 | `Alt+Arrow`                       | Resize current Neovim split                                        |
 | `<leader>tt`                      | Open a terminal below                                              |
 | `Esc Esc` (Terminal)              | Return to Normal mode                                              |
-| `<leader>ut`                      | Preview themes with `j/k`; Enter keeps, Esc cancels                |
+| `<leader>ut`                      | Preview themes with `j/k` or `Ctrl+d/u`; Enter keeps, Esc cancels  |
 | `<leader>uf`                      | Toggle format on save for this buffer                              |
 
 ## Code and diagnostics

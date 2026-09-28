@@ -22,7 +22,7 @@ For Bun tests, add `@types/bun` to each project's development dependencies, list
 - `<Space>wv` and `<Space>wh` split the editor. `Alt+h/j/k/l` moves through editor splits; `Alt+Arrow` resizes them.
 - `<Space>gg` opens Neogit; `<Space>gp` previews the current Git hunk.
 - `F5` starts debugging C/Rust programs with GDB. Build with debug symbols first; the launch prompt asks for the executable path.
-- `<Space>ut` opens the live theme picker. Move through themes with `j/k`, press Enter to keep one, or `q`/Esc to restore the previous theme. The selected theme is remembered across restarts.
+- `<Space>ut` opens the live theme picker. Move through themes with `j/k` (or page with `Ctrl+d`/`Ctrl+u`), press Enter to keep one, or `q`/Esc to restore the previous theme. The selected theme is remembered across restarts.
 
 For JavaScript and TypeScript, formatting follows the project's tool files. ESLint configuration enables ESLint autofixes; Prettier configuration or a local Prettier install enables Prettier afterward. With neither configured, the Mason Prettier installation is the fallback. Conform prefers `node_modules/.bin/prettier` over Mason's executable and reads the project's Prettier settings. Use `:ConformInfo` to see the active tools. The live `:substitute` preview is disabled to keep command entry responsive.
 
@@ -47,6 +47,6 @@ Optional additions to consider after using the core setup: [todo-comments.nvim](
 
 - Press Space to see grouped shortcuts; `<Space>sk` searches mapped keys and descriptions across editor modes. Add `desc = 'Your action'` to a `vim.keymap.set` mapping to make it easy to find. Buffer-local mappings appear when that buffer is active.
 - `<Space>uf` disables or enables format on save for the current buffer.
-- `:Theme onelight` switches to a light theme; `:Theme monokai_pro` or `:Theme kanagawa-wave` selects another. `:Theme` previews every available theme, including four Monokai variants.
+- `:Theme onelight` switches to a light theme; `:Theme rose-pine-dawn`, `:Theme dracula-soft`, or `:Theme cyberdream` selects another. `:Theme` previews every available theme, including Rosé Pine, Everforest, Dracula, Cyberdream, and four Monokai variants.
 - `:Lazy profile` helps identify slow plugins, and `:Lazy health` checks plugin manager health.
 - To restore the previous config, move this `nvim` folder aside and rename the chosen `nvim.backup-*` folder to `nvim`.
