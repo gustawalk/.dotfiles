@@ -19,7 +19,7 @@ For a tmux server that was already running when this file was added, run `tmux s
 
 The main prefix is **Ctrl+b**. Press **Ctrl+b Ctrl+b** to send Ctrl+b to the shell. **Ctrl+a** remains a secondary prefix so **Ctrl+a s** still opens the session list; press **Ctrl+a Ctrl+a** to send Ctrl+a to the shell. A tmux **window** is a tab; a **pane** is a split within a window.
 
-The dim dot beside the session name turns amber while tmux is waiting for the next key after either prefix. It returns to its dim color after the command.
+The dim dot beside the session name turns amber while tmux is waiting for the next key after either prefix, and green while pane-move mode is active. It returns to its dim color when the command or mode ends.
 
 | Keys | Action |
 | --- | --- |
