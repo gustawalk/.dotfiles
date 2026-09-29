@@ -28,7 +28,7 @@ The dim dot beside the session name turns amber while tmux is waiting for the ne
 | `Alt+Shift+h/j/k/l` | Resize the current tmux pane, without a prefix |
 | `Ctrl+b h/j/k/l` | Move between panes when Alt is unavailable |
 | `Ctrl+b H/J/K/L` | Swap the current pane with its neighbor; the split layout stays the same |
-| `Ctrl+b P`, then `h/j/k/l` | Enter pane-move mode; move the active pane left / down / up / right and change the split layout. Keep pressing directions; `q` or Esc exits |
+| `Ctrl+b Ctrl+p` or `Ctrl+a Ctrl+p`, then `h/j/k/l` | Enter pane-move mode; move the active pane left / down / up / right and change the split layout. Keep pressing directions; `q` or Esc exits |
 | `Ctrl+b Ctrl+Arrow` | Resize the current pane when Alt+Shift is unavailable |
 | `Ctrl+b z` | Zoom or restore a pane |
 | `Ctrl+b e` | Tile panes evenly |
@@ -46,7 +46,7 @@ The dim dot beside the session name turns amber while tmux is waiting for the ne
 | `Ctrl+b Ctrl+s` / `Ctrl+b Ctrl+r` | Save all sessions / restore the last save |
 | `Ctrl+b R` | Reload this configuration |
 
-Pane-move mode changes which panes span a row or column. For example, with pane 2 filling the left side and panes 1 and 3 stacked on the right, focus pane 3 and press `Ctrl+b P h`: pane 1 then fills the right side while panes 2 and 3 stack on the left. With pane 3 filling the bottom and panes 1 and 2 across the top, focus pane 2 and press `Ctrl+b P j`: pane 1 then fills the top while panes 3 and 2 share the bottom. Direction keys select a neighboring pane as the insertion point; if there is no pane in that direction, the layout stays as it is.
+Pane-move mode changes which panes span a row or column. For example, with pane 2 filling the left side and panes 1 and 3 stacked on the right, focus pane 3 and press `Ctrl+b Ctrl+p h`: pane 1 then fills the right side while panes 2 and 3 stack on the left. With pane 3 filling the bottom and panes 1 and 2 across the top, focus pane 2 and press `Ctrl+b Ctrl+p j`: pane 1 then fills the top while panes 3 and 2 share the bottom. Direction keys select a neighboring pane as the insertion point; if there is no pane in that direction, the layout stays as it is.
 
 Mouse selection and scrolling are enabled. The `y` copy shortcut uses `wl-copy`; install `wl-clipboard` on Wayland. For another clipboard provider, change that command in `tmux.conf`. Your terminal should support `tmux-256color` and true color for the intended appearance.
 
