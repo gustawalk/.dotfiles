@@ -38,7 +38,7 @@ The dim dot beside the session name turns amber while tmux is waiting for the ne
 | `Ctrl+b ,` | Rename window |
 | `Ctrl+b .` | Move window to a chosen index |
 | `Ctrl+b x` / `Ctrl+b X` | Close the current pane / window, with confirmation |
-| `Ctrl+b s` or `Ctrl+a s` | Show available sessions using the full window, without a pane preview (`v` toggles it) |
+| `Ctrl+b s` or `Ctrl+a s` | Show available sessions using the full window with a preview; `+` expands a session to select a pane, and `v` toggles the preview |
 | `Ctrl+b w` | Show the window and pane tree |
 | `Ctrl+b [` | Enter scroll and copy mode; use `v` to select and `y` to copy |
 | `Ctrl+b d` | Detach from the session |
