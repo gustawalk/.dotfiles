@@ -19,7 +19,7 @@ For a tmux server that was already running when this file was added, run `tmux s
 
 The main prefix is **Ctrl+b**. Press **Ctrl+b Ctrl+b** to send Ctrl+b to the shell. **Ctrl+a** remains a secondary prefix so **Ctrl+a s** still opens the session list; press **Ctrl+a Ctrl+a** to send Ctrl+a to the shell. A tmux **window** is a tab; a **pane** is a split within a window.
 
-The dim dot beside the session name turns amber while tmux is waiting for the next key after either prefix, and green while pane-move mode is active. It returns to its dim color when the command or mode ends.
+The dim dot beside the session name turns amber while tmux is waiting after either prefix, cyan while the active pane is in scroll/copy mode, and green in pane-move mode. Green takes priority if both modes are active.
 
 | Keys | Action |
 | --- | --- |
@@ -41,7 +41,7 @@ The dim dot beside the session name turns amber while tmux is waiting for the ne
 | `Ctrl+b x` / `Ctrl+b X` | Close the current pane / window, with confirmation |
 | `Ctrl+b s` or `Ctrl+a s` | Show available sessions using the full window with a preview; `+` expands a session to select a pane, and `v` toggles the preview |
 | `Ctrl+b w` | Show the window and pane tree |
-| `Ctrl+b [` | Enter scroll and copy mode; use `v` to select and `y` to copy |
+| `Ctrl+b [` | Enter scroll and copy mode; use `v` to select, `y` or Enter to copy, and `q` to return to live output |
 | `Ctrl+b d` | Detach from the session |
 | `Ctrl+b Ctrl+s` / `Ctrl+b Ctrl+r` | Save all sessions / restore the last save |
 | `Ctrl+b R` | Reload this configuration |
@@ -50,7 +50,7 @@ Pane-move mode changes which panes span a row or column. For example, with pane 
 
 Most terminals send `Ctrl+m` and Enter as the same key, so `Ctrl+b Enter` and `Ctrl+a Enter` also enter pane-move mode.
 
-Mouse selection and scrolling are enabled. The `y` copy shortcut uses `wl-copy`; install `wl-clipboard` on Wayland. For another clipboard provider, change that command in `tmux.conf`. Your terminal should support `tmux-256color` and true color for the intended appearance.
+Mouse selection and scrolling are enabled. Copying with `y`, Enter, a mouse drag, or a double/triple click leaves the pane at its scroll position; press `q` to return to live output. Scrolling down to the bottom also keeps copy mode open. The copy shortcuts use `wl-copy`; install `wl-clipboard` on Wayland. For another clipboard provider, change that command in `tmux.conf`. Your terminal should support `tmux-256color` and true color for the intended appearance.
 
 To change the theme, edit the hex colors near the end of `tmux.conf` and press `Ctrl+b R`. To add a shortcut, use `bind` for a prefix key or `bind -n` for a direct key. Test direct keys carefully because they replace the terminal application's own shortcut.
 
