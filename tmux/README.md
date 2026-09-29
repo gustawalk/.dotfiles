@@ -28,6 +28,7 @@ The dim dot beside the session name turns amber while tmux is waiting for the ne
 | `Alt+Shift+h/j/k/l` | Resize the current tmux pane, without a prefix |
 | `Ctrl+b h/j/k/l` | Move between panes when Alt is unavailable |
 | `Ctrl+b H/J/K/L` | Move the current pane left / down / up / right, keeping focus on it |
+| `Ctrl+b P` | Make the active pane full height on the left and stack the others on the right |
 | `Ctrl+b Ctrl+Arrow` | Resize the current pane when Alt+Shift is unavailable |
 | `Ctrl+b z` | Zoom or restore a pane |
 | `Ctrl+b e` | Tile panes evenly |
