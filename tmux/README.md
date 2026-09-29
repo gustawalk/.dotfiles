@@ -28,7 +28,8 @@ The dim dot beside the session name turns amber while tmux is waiting after eith
 | `Alt+Shift+h/j/k/l` | Resize the current tmux pane, without a prefix |
 | `Ctrl+b h/j/k/l` | Move between panes when Alt is unavailable |
 | `Ctrl+b H/J/K/L` | Swap the current pane with its neighbor; the split layout stays the same |
-| `Ctrl+b Ctrl+m` or `Ctrl+a Ctrl+m`, then `h/j/k/l` | Enter pane-move mode; move the active pane left / down / up / right and change the split layout. Keep pressing directions; `q` or Esc exits. Other keys are ignored while in this mode |
+| `Ctrl+b Ctrl+m` or `Ctrl+a Ctrl+m`, then `h/j/k/l` | Enter pane-move mode; move the active pane left / down / up / right and change the split layout. Keep pressing directions; `q` or Esc exits |
+| `Alt+h/j/k/l` in pane-move mode | Focus another tmux pane to move next, while staying in pane-move mode |
 | `Ctrl+b Ctrl+Arrow` | Resize the current pane when Alt+Shift is unavailable |
 | `Ctrl+b z` | Zoom or restore a pane |
 | `Ctrl+b e` | Tile panes evenly |
@@ -47,6 +48,8 @@ The dim dot beside the session name turns amber while tmux is waiting after eith
 | `Ctrl+b R` | Reload this configuration |
 
 Pane-move mode changes which panes span a row or column. For example, with pane 2 filling the left side and panes 1 and 3 stacked on the right, focus pane 3 and press `Ctrl+b Ctrl+m h`: pane 1 then fills the right side while panes 2 and 3 stack on the left. With pane 3 filling the bottom and panes 1 and 2 across the top, focus pane 2 and press `Ctrl+b Ctrl+m j`: pane 1 then fills the top while panes 3 and 2 share the bottom. Direction keys select a neighboring pane as the insertion point; if there is no pane in that direction, the layout stays as it is.
+
+While pane-move mode is active, use `Alt+h/j/k/l` to choose a different tmux pane, then plain `h/j/k/l` to move that pane. Other keys are ignored; `q` or Esc exits the mode.
 
 Most terminals send `Ctrl+m` and Enter as the same key, so `Ctrl+b Enter` and `Ctrl+a Enter` also enter pane-move mode.
 
