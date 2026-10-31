@@ -13,12 +13,14 @@ declare -A FLAGS_NAMES=(
     [".second_monitor_change_theme_flag"]="Second Monitor Change Theme"
     [".same_wallpapers_flag"]="Same Wallpapers On Monitors"
     [".replay_buffer_flag"]="Replay Buffer"
+    [".screenshot_cursor_flag"]="Cursor in Screenshots"
 )
 
 ORDER=(
     ".theme_refresh_flag"
     ".same_wallpapers_flag"
     ".replay_buffer_flag"
+    ".screenshot_cursor_flag"
     ".sddm_refresh_flag"
     ".second_monitor_change_theme_flag"
 )
@@ -39,13 +41,13 @@ for flag_file in $(printf "%s\n" "${ORDER[@]}"); do
     options+="${FLAGS_NAMES[$flag_file]}   [$status]\x00icon\x1f${icon}"
 done
 
-chosen=$(echo -e "$options" | sed '/^&/d' | rofi -dmenu -p "Toggles" -show-icons -theme-str '
+chosen=$(echo -e "$options" | sed '/^&/d' | rofi -dmenu -i -p "Toggles" -show-icons -theme-str '
   window {
       width: 50%;
   }
   listview {
     columns: 1;
-    lines: 4;
+    lines: 5;
     spacing: 10px;
   }
   element {

@@ -3,25 +3,15 @@
 
 notif="$HOME/.config/swaync/images/ja.png"
 
-LAYOUT=$(hyprctl -j getoption general:layout | jq '.str' | sed 's/"//g')
+LAYOUT=$(hyprctl -j getoption general.layout | jq -r '.str')
 
 case $LAYOUT in
 "master")
-	hyprctl keyword general:layout dwindle
-	hyprctl keyword unbind SUPER,J
-	hyprctl keyword unbind SUPER,K
-	hyprctl keyword bind SUPER,J,cyclenext
-	hyprctl keyword bind SUPER,K,cyclenext,prev
-	hyprctl keyword bind SUPER,O,togglesplit
+	hyprctl eval 'hl.config({ general = { layout = "dwindle" } }); hl.unbind("SUPER + J"); hl.unbind("SUPER + K"); hl.bind("SUPER + J", hl.dsp.window.cycle_next({ next = true })); hl.bind("SUPER + K", hl.dsp.window.cycle_next({ next = false })); hl.bind("SUPER + O", hl.dsp.layout("togglesplit"))'
   notify-send -e -u low -i "$notif" " Dwindle Layout"
 	;;
 "dwindle")
-	hyprctl keyword general:layout master
-	hyprctl keyword unbind SUPER,J
-	hyprctl keyword unbind SUPER,K
-	hyprctl keyword unbind SUPER,O
-	hyprctl keyword bind SUPER,J,layoutmsg,cyclenext
-	hyprctl keyword bind SUPER,K,layoutmsg,cycleprev
+	hyprctl eval 'hl.config({ general = { layout = "master" } }); hl.unbind("SUPER + J"); hl.unbind("SUPER + K"); hl.unbind("SUPER + O"); hl.bind("SUPER + J", hl.dsp.layout("cyclenext")); hl.bind("SUPER + K", hl.dsp.layout("cycleprev"))'
   notify-send -e -u low -i "$notif" " Master Layout"
 	;;
 *) ;;

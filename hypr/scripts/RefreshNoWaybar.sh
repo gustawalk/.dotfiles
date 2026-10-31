@@ -28,10 +28,11 @@ done
 ags -q && ags &
 
 # Wallust refresh
-${SCRIPTSDIR}/WallustSwww.sh &
+${SCRIPTSDIR}/WallustSwww.sh
 
 # reload swaync
 swaync-client --reload-config
+hyprctl reload
 
 # Relaunching rainbow borders if the script exists
 sleep 1

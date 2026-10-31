@@ -1,0 +1,12 @@
+[Unit]
+Description=GPU Screen Recorder (instant replay)
+After=graphical.target
+
+[Service]
+ExecStart=%h/.local/bin/gsr-start.sh
+# The current NVIDIA/FFmpeg NVENC API mismatch makes this command fail.
+# Do not repeatedly relaunch it and steal CPU/GPU time from foreground games.
+Restart=no
+
+[Install]
+WantedBy=default.target

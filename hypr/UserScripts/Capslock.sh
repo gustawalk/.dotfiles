@@ -1,29 +1,28 @@
 #!/bin/bash
 
-LOCKFILE="/tmp/waybar_capslock.lock"
-path=$(ls -d /sys/class/leds/input*::capslock 2>/dev/null | head -n1)
+# Waybar owns this streaming process; each bar can monitor independently.
+path=""
+for led in /sys/class/leds/input*::capslock; do
+    if [[ -r "$led/brightness" ]]; then
+        path="$led/brightness"
+        break
+    fi
+done
 
-if [[ -f "$LOCKFILE" ]]; then
-    echo '{"text":"❓","tooltip":"Caps Lock not found","class":"off"}'
-    rm -f "$LOCKFILE"
-    kill "$(cat "$LOCKFILE")" 2>/dev/null
-fi
-
-echo "$$" > "$LOCKFILE"
-trap "rm -f '$LOCKFILE'" EXIT
-
+previous=""
 while true; do
+    brightness="missing"
     if [[ -n "$path" ]]; then
-        brightness=$(cat "$path/brightness" 2>/dev/null)
-
-        if [[ "$brightness" == "1" ]]; then
-            echo '{"text":"大","tooltip":"Caps Lock ON","class":"on"}'
-        else
-            echo '{"text":"小","tooltip":"Caps Lock OFF","class":"off"}'
-        fi
-    else
-        echo '{"text":"❓","tooltip":"Caps Lock not found","class":"off"}'
+        IFS= read -r brightness < "$path" || brightness="missing"
     fi
 
+    if [[ "$brightness" != "$previous" ]]; then
+        case "$brightness" in
+            1) echo '{"text":"大","tooltip":"Caps Lock ON","class":"on"}' ;;
+            0) echo '{"text":"小","tooltip":"Caps Lock OFF","class":"off"}' ;;
+            *) echo '{"text":"❓","tooltip":"Caps Lock not found","class":"off"}' ;;
+        esac
+        previous="$brightness"
+    fi
     sleep 0.3
 done

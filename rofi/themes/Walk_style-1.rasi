@@ -1,0 +1,141 @@
+/* ---- Rofi Theme (Wallust Adapted, Minimal Clean) ---- */
+/* Edited by Walk */
+
+@theme "~/.config/rofi/wallust/colors-rofi.rasi"
+
+configuration {
+    show-icons: true;
+    display-drun: "{name}";
+    drun-display-format: "{icon} {name}";
+    disable-history: false;
+    click-to-exit: true;
+    location: 0;
+}
+
+/*****----- Global Properties -----*****/
+* {
+    font: "Iosevka Nerd Font 12";
+}
+
+/*****----- Window -----*****/
+window {
+    transparency: "real";
+    background-color: rgba(0,0,0,0.85);  /* transparent */
+    text-color: @foreground;
+    border: 2px;
+    border-color: @border-color;
+    border-radius: 12px;
+    width: 28%;
+    anchor: center;
+}
+
+/*****----- Input Bar -----*****/
+entry {
+    background-color: transparent;
+    text-color: @foreground;
+    placeholder: "Search...";
+    placeholder-color: @color14;
+    expand: true;
+    border: 0px 0px 2px 0px;
+    border-color: @color12;
+    padding: 10px;
+    horizontal-align: 0;
+}
+
+inputbar {
+    children: [entry];
+    background-color: transparent;
+    text-color: @foreground;
+    margin: 0px;
+    padding: 10px 20px;
+}
+
+/*****----- List View -----*****/
+listview {
+    background-color: transparent;
+    columns: 1;
+    lines: 8;
+    spacing: 6px;
+    layout: vertical;
+    dynamic: true;
+    scrollbar: true;
+}
+
+/*****----- Scrollbar -----*****/
+scrollbar {
+    border: 0px;
+    border-radius: 10px;
+    background-color: transparent;
+    handle-color: @color12;
+    handle-width: 2px;
+}
+
+/*****----- Main Box -----*****/
+mainbox {
+    background-color: transparent;
+    children: [inputbar, message, listview];
+    spacing: 15px;
+    padding: 15px;
+}
+
+/*****----- Elements -----*****/
+element {
+    orientation: horizontal;
+    background-color: transparent;   /* transparent for each app */
+    text-color: @normal-foreground;
+    border-radius: 6px;
+    padding: 8px;
+    cursor: pointer;
+}
+
+element-text {
+    background-color: transparent;
+    text-color: inherit;
+    expand: true;
+    horizontal-align: 0;
+    vertical-align: 0.5;
+    margin: 0px 0px 0px 8px;
+}
+
+element-icon {
+    size: 22px;
+    text-color: inherit;
+    background-color: transparent;
+}
+
+/*****----- Selected / Active / Urgent States -----*****/
+element selected {
+    background-color: @selected-normal-background;
+    text-color: @selected-normal-foreground;
+}
+
+element normal.active {
+    background-color: @active-background;
+    text-color: @active-foreground;
+}
+
+element normal.urgent {
+    background-color: @urgent-background;
+    text-color: @urgent-foreground;
+}
+
+/*****----- Message Boxes -----*****/
+message {
+    background-color: transparent;
+    border: 0px;
+}
+
+textbox {
+    padding: 10px;
+    border-radius: 8px;
+    background-color: @color3;
+    text-color: @foreground;
+}
+
+error-message {
+    padding: 10px;
+    border-radius: 10px;
+    background-color: @urgent-background;
+    text-color: @urgent-foreground;
+}
+

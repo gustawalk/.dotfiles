@@ -23,6 +23,7 @@ done
 
 # added since wallust sometimes not applying
 killall -SIGUSR2 waybar 
+hyprctl reload
 
 # quit ags & relaunch ags
 ags -q && ags &
@@ -34,7 +35,7 @@ done
 
 #Restart waybar
 sleep 1
-waybar &
+"$HOME/.config/waybar/bin/waybar" &
 
 # relaunch swaync
 sleep 0.5

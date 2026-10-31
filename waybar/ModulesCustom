@@ -291,7 +291,7 @@
 	"format": "",
 	"tooltip": false
 },
-"custom/keyboard-state": {
+"custom/:keyboard-state": {
   "exec": "bash -c 'hyprctl -j devices | jq -r \"map(select(.type==\\\"keyboard\\\")) | .[0].active_key_lock.caps ? \\\"{\\\\\\\"text\\\\\\\":\\\\\\\"大\\\\\\\",\\\\\\\"class\\\\\\\":\\\\\\\"on\\\\\\\"}\\\" : \\\"{\\\\\\\"text\\\\\\\":\\\\\\\"小\\\\\\\",\\\\\\\"class\\\\\\\":\\\\\\\"off\\\\\\\"}\\\"\"'",
   "interval": 0.2,
   "return-type": "json"
