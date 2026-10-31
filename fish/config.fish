@@ -1,11 +1,16 @@
-if command -q pokemon-colorscripts
-    pokemon-colorscripts --no-title -rn haunter,gengar,sylveon,vaporeon,eevee,fennekin
+if status is-interactive; and not set -q RICE_SKIP_BANNER
+    set -l pokemon (random choice haunter gengar sylveon vaporeon eevee fennekin)
+    set -l sprite "$__fish_config_dir/pokemon/$pokemon"
+    if test -r "$sprite"
+        cat "$sprite"
+        echo
+    end
 end
 
 # Settings {{{
-set -U fish_greeting
-set -U fish_color_command magenta
-set -U fish_color_param blue
+set -g fish_greeting
+set -g fish_color_command magenta
+set -g fish_color_param blue
 set -x PATH /usr/local/bin /usr/bin /bin /usr/sbin /sbin $PATH
 
 set -gx CONFIG_DIR "$HOME/.config/"
@@ -18,8 +23,10 @@ else
 end
 set -gx FZF_DEFAULT_OPTS '--height=50% --layout=reverse'
 set -gx FZF_DEFAULT_COMMAND 'rg --files --no-ignore-vcs --hidden'
-set -gx SHELL (which fish)
-set -gx GPG_TTY (tty)
+set -gx SHELL (status fish-path)
+if status is-interactive; and isatty stdin
+    set -gx GPG_TTY (tty)
+end
 set -gx EDITOR nvim
 set -gx EVENT_NOKQUEUE 1
 set -gx HOMEBREW_FORCE_VENDOR_RUBY 1
@@ -27,6 +34,9 @@ set -gx HOMEBREW_NO_ENV_HINTS 1
 # }}}
 
 # Aliases {{{
+
+alias notes "nvim $HOME/notes.md"
+
 # don't send terminal type 'alacritty' through ssh
 alias ssh "env TERM=xterm-256color ssh"
 alias rails "env TERM=xterm-256color rails"
@@ -128,14 +138,17 @@ function fish_prompt --description 'Write out the prompt'
     set_color blue
     echo -n (prompt_pwd)
 
-    if test (git rev-parse --git-dir 2>/dev/null)
-        and not test (pwd | grep '.git')
+    # One Git invocation per redraw, without refreshing the index on disk.
+    set -l git_info (command git --no-optional-locks status --porcelain=v1 --branch 2>/dev/null)
+    if set -q git_info[1]
+        set -l branch (string replace -r '^## (.*?)(\.\.\..*)?$' '$1' -- $git_info[1])
+        set branch (string replace -r '^(No commits yet on|Initial commit on) ' '' -- $branch)
         set_color yellow
         echo -n " on "
         set_color green
-        echo -n (git status 2>/dev/null | head -1 | string split ' ')[-1]
+        echo -n $branch
 
-        if test -n (echo (git status -s 2>/dev/null))
+        if set -q git_info[2]
             set_color magenta
         end
 
