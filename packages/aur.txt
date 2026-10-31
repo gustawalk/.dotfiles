@@ -1,0 +1,7 @@
+# Required wallpaper/theme tools; installer checks official repositories first.
+swww
+wallust
+wlogout
+bibata-cursor-theme-bin
+flat-remix
+flat-remix-gtk

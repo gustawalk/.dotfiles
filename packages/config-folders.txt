@@ -1,0 +1,14 @@
+fish
+hypr
+kitty
+waybar
+nvim
+tmux
+swaync
+wallust
+wlogout
+rofi
+ags
+qt5ct
+qt6ct
+btop

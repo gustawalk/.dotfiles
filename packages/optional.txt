@@ -1,0 +1,7 @@
+# Extra launchers or scripts; not needed for the core desktop.
+mpvpaper
+gpu-screen-recorder
+cava
+wtype
+ydotool
+xdotool

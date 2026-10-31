@@ -1,3 +1,16 @@
-# Fish writes universal variables for the current machine.
+# Local state, credentials and backups are never part of the restore source.
 fish/fish_variables
-nvim.log
+**/.git/
+**/__pycache__/
+**/node_modules/
+*.log
+*.bak
+*.tar.gz
+*.backup
+.env
+.env.*
+!.env.example
+rofi/.current_wallpaper
+backups/
+# Externally mounted, machine-specific development integration.
+fish/conf.d/unity-cli.fish
