@@ -1,6 +1,6 @@
 # Dotfiles
 
-Working Arch Linux rice snapshot, synchronized on 2026-10-31. Includes Hyprland
+Personal Arch Linux rice configuration, updated on 2026-11-02. Includes Hyprland
 Lua, Kitty, Fish, Waybar, Neovim, Zed, tmux, Rofi, SwayNC, Wallust, Wlogout, AGS,
 Qt theme settings and btop. Six Pokémon banner sprites and tmux-resurrect are
 bundled so they do not depend on a previous home directory.
@@ -64,14 +64,16 @@ git commit -m "chore: update desktop configuration"
 git push
 ```
 
-The initial sync does not publish or commit anything. Commit and push this snapshot
-before formatting the PC. Test restore in a disposable account or VM first.
+Commit and push configuration changes before formatting the PC so the remote
+repository contains the current setup. Test restore in a disposable account or VM
+first. Personal files, credentials and wallpapers need separate backups.
 
 ## Machine-specific setup
 
-- This snapshot retains your existing `/home/walk` paths in Lua, scripts and styles.
-  A reinstall with the same username works best. For a different username, review
-  `rg -n '/home/walk|/mnt/gustavo' hypr fish ags rofi waybar wallust` before login.
+- User paths resolve from `HOME` at runtime. Hyprland quotes script paths derived
+  from Lua's `os.getenv("HOME")`; Zed tasks use quoted `$HOME` expansion. Restore
+  works under another username without editing those paths. Waybar selection
+  symlinks are relative, so they do not contain the original home directory.
 - Review `hypr/monitors.conf`, `workspaces.conf`, `UserConfigs/LaptopDisplay.conf`,
   and the NVIDIA environment in Lua and `fish/conf.d/nvidia-hypr.fish` for new
   hardware. These are saved as your current baseline, not universally portable defaults.
@@ -82,20 +84,47 @@ before formatting the PC. Test restore in a disposable account or VM first.
   Flat-Remix-Blue-Dark and Bibata-Modern-Ice. Locally modified theme assets need
   a separate backup. GTK settings were not copied because they contain local
   bookmarks and external theme links.
-- `fish/conf.d/unity-cli.fish` is excluded: it sources a project on `/mnt/gustavo`.
+- `fish/conf.d/unity-cli.fish` is excluded: it sources a project on an external mount.
   Re-create it only after restoring that project. Rust initialization remains
   available through `rustup`; the installer adds rustfmt and rust-analyzer.
 - Enable the services you use after checking conflicts: NetworkManager, Bluetooth,
   PipeWire/WirePlumber, and a power-profile service. The installer does not enable
   services or change your default shell. Set Fish as your login shell if desired.
 - The replay-buffer keybinds expect `gpu-screen-recorder.service` and
-  `~/.local/bin/gsr-start.sh`, which are saved under `extras/`. Review monitor,
-  codec and output paths, copy the files to the documented locations, then run
-  `systemctl --user daemon-reload`. They are not automatically enabled: the saved
-  unit documents an existing NVIDIA/FFmpeg mismatch.
+  `~/.local/bin/gsr-start.sh`, which are saved under `extras/`. Recordings default
+  to `$HOME/Videos/Clips` (created automatically). Set `GSR_OUTPUT_DIR` for a custom
+  disk, `GSR_MONITOR` for another monitor (default `DP-1`), or `GSR_CODEC` for
+  another codec (default `h264`) in the service environment using
+  `systemctl --user edit gpu-screen-recorder.service`. Copy the files to the
+  documented locations, then run `systemctl --user daemon-reload`. They are not
+  automatically enabled: the saved unit documents an existing NVIDIA/FFmpeg mismatch.
 - Hyprland starts Fcitx5; select your keyboard/input methods after login.
 - `fish/fish_variables`, histories, caches, secrets, credentials, and archived
   backups are excluded. Save passwords/SSH keys separately using encrypted backups.
+
+### Optional recording setup
+
+Copy the saved launcher and user service without enabling recording:
+
+```bash
+install -Dm755 extras/local-bin/gsr-start.sh "$HOME/.local/bin/gsr-start.sh"
+install -Dm644 extras/systemd-user/gpu-screen-recorder.service \
+  "$HOME/.config/systemd/user/gpu-screen-recorder.service"
+systemctl --user daemon-reload
+```
+
+Use `systemctl --user edit gpu-screen-recorder.service` to set machine-local
+options. For example, substitute your actual disk path and monitor name:
+
+```ini
+[Service]
+Environment="GSR_OUTPUT_DIR=/path/to/Clips"
+Environment="GSR_MONITOR=HDMI-A-1"
+Environment="GSR_CODEC=h264"
+```
+
+The default path needs no override and follows the current user's `HOME`.
+Review the saved NVIDIA/FFmpeg compatibility note before starting the service.
 
 ## Zed
 
@@ -106,8 +135,8 @@ include `zed` (the `zeditor` executable) and `television` (`tv`). The helper use
 
 Zed's settings request the configured theme/icon extensions automatically. The
 local `themes/` directory was empty. The previous settings backup, credentials,
-application cache and workspace state are not included. Tasks retain the existing
-`/home/walk/.config/zed` path; review it if restoring under a different username.
+application cache and workspace state are not included. Tasks resolve the helper
+through a quoted `$HOME/.config/zed/bin/television-open` command.
 The Rust check configuration uses Clippy (`rustup component add clippy`).
 
 ## Caps Lock indicator
@@ -151,10 +180,20 @@ Neovim plugins install through lazy.nvim on first launch. Run `:Lazy sync`, then
 Useful config checks after installing dependencies:
 
 ```bash
-bash -n install-prerequisites.sh restore.sh scripts/*.sh
+for script in install-prerequisites.sh restore.sh scripts/*.sh; do
+  bash -n "$script" || break
+done
 fish -n fish/config.fish
+python tests/test_portability.py
+python hypr/tests/test_capslock.py
 Hyprland --verify-config -c "$PWD/hypr/hyprland.lua"
 ```
+
+The portability checks require Python and the `lua` command, both included in the
+Arch dependency manifest. They exercise the changed Lua/Zed launchers with a
+different home directory, including spaces and apostrophes, and verify recorder
+defaults and environment overrides using stub commands. They do not launch the
+real applications or start recording.
 
 Dry runs and isolated restore checks validate the scripts without installing
 packages. A complete clean-machine installation and source builds require a fresh
