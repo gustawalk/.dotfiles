@@ -11,6 +11,11 @@ local paths = {
 	files = "thunar",
 	mainMod = "SUPER",
 }
+-- Resolve script paths for the current user and quote them for the shell.
+local function script_command(relative, args)
+	local quoted = "'" .. (root .. "/" .. relative):gsub("'", "'\\''") .. "'"
+	return quoted .. (args and " " .. args or "")
+end
 local function expand(s)
 	for _ = 1, 3 do
 		s = s:gsub("%$([%w_]+)", function(k)
@@ -265,7 +270,7 @@ hl.window_rule({ match = { title = ".*is sharing.*" }, workspace = "special:scre
 
 -- The original startup list remains editable by the wallpaper chooser.
 hl.on("hyprland.start", function()
-	hl.exec_cmd(root .. "/initial-boot.sh")
+	hl.exec_cmd(script_command("initial-boot.sh"))
 	hl.exec_cmd("fcitx5")
 	each_setting(root .. "/UserConfigs/Startup_Apps.conf", function(line)
 		local key, value = line:match("^%$(%w+)%s*=%s*(.+)$")
@@ -283,14 +288,14 @@ end)
 
 -- Keybindings migrated from the three active keybind files.
 -- configs/Keybinds.conf
-hl.bind("SUPER + T", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/Toggles.sh"))
+hl.bind("SUPER + T", hl.dsp.exec_cmd(script_command("scripts/Toggles.sh")))
 hl.bind("CTRL + ALT + Delete", hl.dsp.exit())
 hl.bind("SUPER + Q", hl.dsp.window.close())
-hl.bind("SUPER + SHIFT + Q", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/KillActiveProcess.sh"))
-hl.bind("CTRL + ALT + L", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/LockScreen.sh"))
-hl.bind("CTRL + ALT + P", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/Wlogout.sh"))
+hl.bind("SUPER + SHIFT + Q", hl.dsp.exec_cmd(script_command("scripts/KillActiveProcess.sh")))
+hl.bind("CTRL + ALT + L", hl.dsp.exec_cmd(script_command("scripts/LockScreen.sh")))
+hl.bind("CTRL + ALT + P", hl.dsp.exec_cmd(script_command("scripts/Wlogout.sh")))
 hl.bind("SUPER + SHIFT + N", hl.dsp.exec_cmd("swaync-client -t -sw"))
-hl.bind("SUPER + SHIFT + E", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/Kool_Quick_Settings.sh"))
+hl.bind("SUPER + SHIFT + E", hl.dsp.exec_cmd(script_command("scripts/Kool_Quick_Settings.sh")))
 hl.bind("SUPER + CTRL + D", hl.dsp.layout("removemaster"))
 hl.bind("SUPER + I", hl.dsp.layout("addmaster"))
 hl.bind("SUPER + J", hl.dsp.window.cycle_next())
@@ -304,29 +309,29 @@ hl.bind("ALT + tab", hl.dsp.window.cycle_next({ next = true }))
 hl.bind("ALT + tab", hl.dsp.window.alter_zorder({ mode = "top" }))
 hl.bind(
 	"xf86audioraisevolume",
-	hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/Volume.sh --inc"),
+	hl.dsp.exec_cmd(script_command("scripts/Volume.sh", "--inc")),
 	{ repeating = true, locked = true }
 )
 hl.bind(
 	"xf86audiolowervolume",
-	hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/Volume.sh --dec"),
+	hl.dsp.exec_cmd(script_command("scripts/Volume.sh", "--dec")),
 	{ repeating = true, locked = true }
 )
 hl.bind(
 	"xf86AudioMicMute",
-	hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/Volume.sh --toggle-mic"),
+	hl.dsp.exec_cmd(script_command("scripts/Volume.sh", "--toggle-mic")),
 	{ locked = true }
 )
-hl.bind("xf86audiomute", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/Volume.sh --toggle"), { locked = true })
+hl.bind("xf86audiomute", hl.dsp.exec_cmd(script_command("scripts/Volume.sh", "--toggle")), { locked = true })
 hl.bind("xf86Sleep", hl.dsp.exec_cmd("systemctl suspend"), { locked = true })
-hl.bind("xf86Rfkill", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/AirplaneMode.sh"), { locked = true })
-hl.bind("code:172", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/MediaCtrl.sh --pause"), { locked = true })
-hl.bind("xf86AudioPause", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/MediaCtrl.sh --pause"), { locked = true })
-hl.bind("xf86AudioPlay", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/MediaCtrl.sh --pause"), { locked = true })
-hl.bind("xf86AudioNext", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/MediaCtrl.sh --nxt"), { locked = true })
-hl.bind("xf86AudioPrev", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/MediaCtrl.sh --prv"), { locked = true })
-hl.bind("xf86audiostop", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/MediaCtrl.sh --stop"), { locked = true })
-hl.bind("SUPER + SHIFT + S", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/ScreenShot.sh"))
+hl.bind("xf86Rfkill", hl.dsp.exec_cmd(script_command("scripts/AirplaneMode.sh")), { locked = true })
+hl.bind("code:172", hl.dsp.exec_cmd(script_command("scripts/MediaCtrl.sh", "--pause")), { locked = true })
+hl.bind("xf86AudioPause", hl.dsp.exec_cmd(script_command("scripts/MediaCtrl.sh", "--pause")), { locked = true })
+hl.bind("xf86AudioPlay", hl.dsp.exec_cmd(script_command("scripts/MediaCtrl.sh", "--pause")), { locked = true })
+hl.bind("xf86AudioNext", hl.dsp.exec_cmd(script_command("scripts/MediaCtrl.sh", "--nxt")), { locked = true })
+hl.bind("xf86AudioPrev", hl.dsp.exec_cmd(script_command("scripts/MediaCtrl.sh", "--prv")), { locked = true })
+hl.bind("xf86audiostop", hl.dsp.exec_cmd(script_command("scripts/MediaCtrl.sh", "--stop")), { locked = true })
+hl.bind("SUPER + SHIFT + S", hl.dsp.exec_cmd(script_command("scripts/ScreenShot.sh")))
 hl.bind("SUPER + SHIFT + left", hl.dsp.window.resize({ x = -50, y = 0, relative = true }), { repeating = true })
 hl.bind("SUPER + SHIFT + right", hl.dsp.window.resize({ x = 50, y = 0, relative = true }), { repeating = true })
 hl.bind("SUPER + SHIFT + up", hl.dsp.window.resize({ x = 0, y = -50, relative = true }), { repeating = true })
@@ -406,12 +411,12 @@ hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true })
 -- UserConfigs/Laptops.conf
 hl.bind(
 	"xf86KbdBrightnessDown",
-	hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/BrightnessKbd.sh --dec"),
+	hl.dsp.exec_cmd(script_command("scripts/BrightnessKbd.sh", "--dec")),
 	{ repeating = true }
 )
 hl.bind(
 	"xf86KbdBrightnessUp",
-	hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/BrightnessKbd.sh --inc"),
+	hl.dsp.exec_cmd(script_command("scripts/BrightnessKbd.sh", "--inc")),
 	{ repeating = true }
 )
 hl.bind("xf86Launch1", hl.dsp.exec_cmd("rog-control-center"))
@@ -419,39 +424,39 @@ hl.bind("xf86Launch3", hl.dsp.exec_cmd("asusctl led-mode -n"))
 hl.bind("xf86Launch4", hl.dsp.exec_cmd("asusctl profile -n"))
 hl.bind(
 	"xf86MonBrightnessDown",
-	hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/Brightness.sh --dec"),
+	hl.dsp.exec_cmd(script_command("scripts/Brightness.sh", "--dec")),
 	{ repeating = true }
 )
 hl.bind(
 	"xf86MonBrightnessUp",
-	hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/Brightness.sh --inc"),
+	hl.dsp.exec_cmd(script_command("scripts/Brightness.sh", "--inc")),
 	{ repeating = true }
 )
-hl.bind("xf86TouchpadToggle", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/TouchPad.sh"))
-hl.bind("SUPER + F6", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/ScreenShot.sh --now"))
-hl.bind("SUPER + SHIFT + F6", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/ScreenShot.sh --area"))
-hl.bind("SUPER + CTRL + F6", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/ScreenShot.sh --in5"))
-hl.bind("SUPER + ALT + F6", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/ScreenShot.sh --in10"))
-hl.bind("ALT + F6", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/ScreenShot.sh --active"))
+hl.bind("xf86TouchpadToggle", hl.dsp.exec_cmd(script_command("scripts/TouchPad.sh")))
+hl.bind("SUPER + F6", hl.dsp.exec_cmd(script_command("scripts/ScreenShot.sh", "--now")))
+hl.bind("SUPER + SHIFT + F6", hl.dsp.exec_cmd(script_command("scripts/ScreenShot.sh", "--area")))
+hl.bind("SUPER + CTRL + F6", hl.dsp.exec_cmd(script_command("scripts/ScreenShot.sh", "--in5")))
+hl.bind("SUPER + ALT + F6", hl.dsp.exec_cmd(script_command("scripts/ScreenShot.sh", "--in10")))
+hl.bind("ALT + F6", hl.dsp.exec_cmd(script_command("scripts/ScreenShot.sh", "--active")))
 -- UserConfigs/UserKeybinds.conf
 hl.bind("SUPER + D", hl.dsp.exec_cmd("pkill rofi || true && rofi -show drun -modi drun,filebrowser,run,window"))
 hl.bind("SUPER + B", hl.dsp.exec_cmd('xdg-open "https://"'))
 hl.bind("SUPER + Return", hl.dsp.exec_cmd(paths.term))
 hl.bind("SUPER + E", hl.dsp.exec_cmd("thunar"))
-hl.bind("PRINT", hl.dsp.exec_cmd("/home/walk/.config/hypr/UserScripts/ClipBuffer.sh"))
-hl.bind("SUPER + ALT + CTRL + W", hl.dsp.exec_cmd("/home/walk/.config/hypr/UserBins/whatsappweb"))
-hl.bind("SUPER + ALT + CTRL + A", hl.dsp.exec_cmd("/home/walk/.config/hypr/UserBins/archwiki"))
-hl.bind("SUPER + ALT + G", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/KeyHints.sh"))
-hl.bind("SUPER + ALT + R", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/Refresh.sh"))
-hl.bind("SUPER + ALT + E", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/RofiEmoji.sh"))
-hl.bind("SUPER + S", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/RofiSearch.sh"))
-hl.bind("SUPER + ALT + O", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/ChangeBlur.sh"))
-hl.bind("SUPER + ALT + Z", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/ChangeLayout.sh"))
-hl.bind("SUPER + ALT + V", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/ClipManager.sh"))
-hl.bind("SUPER + CTRL + R", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/RofiThemeSelector.sh"))
+hl.bind("PRINT", hl.dsp.exec_cmd(script_command("UserScripts/ClipBuffer.sh")))
+hl.bind("SUPER + ALT + CTRL + W", hl.dsp.exec_cmd(script_command("UserBins/whatsappweb")))
+hl.bind("SUPER + ALT + CTRL + A", hl.dsp.exec_cmd(script_command("UserBins/archwiki")))
+hl.bind("SUPER + ALT + G", hl.dsp.exec_cmd(script_command("scripts/KeyHints.sh")))
+hl.bind("SUPER + ALT + R", hl.dsp.exec_cmd(script_command("scripts/Refresh.sh")))
+hl.bind("SUPER + ALT + E", hl.dsp.exec_cmd(script_command("scripts/RofiEmoji.sh")))
+hl.bind("SUPER + S", hl.dsp.exec_cmd(script_command("scripts/RofiSearch.sh")))
+hl.bind("SUPER + ALT + O", hl.dsp.exec_cmd(script_command("scripts/ChangeBlur.sh")))
+hl.bind("SUPER + ALT + Z", hl.dsp.exec_cmd(script_command("scripts/ChangeLayout.sh")))
+hl.bind("SUPER + ALT + V", hl.dsp.exec_cmd(script_command("scripts/ClipManager.sh")))
+hl.bind("SUPER + CTRL + R", hl.dsp.exec_cmd(script_command("scripts/RofiThemeSelector.sh")))
 hl.bind(
 	"SUPER + CTRL + SHIFT + R",
-	hl.dsp.exec_cmd("pkill rofi || true && /home/walk/.config/hypr/scripts/RofiThemeSelector-modified.sh")
+	hl.dsp.exec_cmd("pkill rofi || true && " .. script_command("scripts/RofiThemeSelector-modified.sh"))
 )
 hl.bind("SUPER + CTRL + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
 hl.bind("SUPER + SHIFT + F", hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }))
@@ -483,16 +488,16 @@ hl.bind("SUPER + ALT + mouse_up", function()
 	zoom(0.5)
 end)
 hl.bind("SUPER + CTRL + ALT + B", hl.dsp.exec_cmd("pkill -SIGUSR1 waybar"))
-hl.bind("SUPER + CTRL + B", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/WaybarStyles.sh"))
-hl.bind("SUPER + ALT + B", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/WaybarLayout.sh"))
-hl.bind("SUPER + W", hl.dsp.exec_cmd("/home/walk/.config/hypr/UserScripts/WallpaperSelect.sh"))
-hl.bind("SUPER + SHIFT + W", hl.dsp.exec_cmd("/home/walk/.config/hypr/UserScripts/WallpaperEffects.sh"))
+hl.bind("SUPER + CTRL + B", hl.dsp.exec_cmd(script_command("scripts/WaybarStyles.sh")))
+hl.bind("SUPER + ALT + B", hl.dsp.exec_cmd(script_command("scripts/WaybarLayout.sh")))
+hl.bind("SUPER + W", hl.dsp.exec_cmd(script_command("UserScripts/WallpaperSelect.sh")))
+hl.bind("SUPER + SHIFT + W", hl.dsp.exec_cmd(script_command("UserScripts/WallpaperEffects.sh")))
 hl.bind("SUPER + CTRL + O", hl.dsp.window.set_prop({ prop = "opaque", value = "toggle" }))
-hl.bind("SUPER + SHIFT + X", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/KeyBinds.sh"))
-hl.bind("SUPER + SHIFT + A", hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/Animations.sh"))
+hl.bind("SUPER + SHIFT + X", hl.dsp.exec_cmd(script_command("scripts/KeyBinds.sh")))
+hl.bind("SUPER + SHIFT + A", hl.dsp.exec_cmd(script_command("scripts/Animations.sh")))
 hl.bind(
 	"ALT_L + SHIFT_L",
-	hl.dsp.exec_cmd("/home/walk/.config/hypr/scripts/SwitchKeyboardLayout.sh"),
+	hl.dsp.exec_cmd(script_command("scripts/SwitchKeyboardLayout.sh")),
 	{ locked = true, non_consuming = true }
 )
-hl.bind("SUPER + ALT + C", hl.dsp.exec_cmd("/home/walk/.config/hypr/UserScripts/RofiCalc.sh"))
+hl.bind("SUPER + ALT + C", hl.dsp.exec_cmd(script_command("UserScripts/RofiCalc.sh")))

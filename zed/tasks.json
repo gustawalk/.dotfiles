@@ -1,7 +1,7 @@
 [
   {
     "label": "Television: Find files",
-    "command": "/home/walk/.config/zed/bin/television-open",
+    "command": "\"$HOME/.config/zed/bin/television-open\"",
     "args": [
       "files"
     ],
@@ -17,7 +17,7 @@
   },
   {
     "label": "Television: Search text",
-    "command": "/home/walk/.config/zed/bin/television-open",
+    "command": "\"$HOME/.config/zed/bin/television-open\"",
     "args": [
       "text"
     ],
