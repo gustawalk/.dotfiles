@@ -64,7 +64,7 @@ fi
 sudo pacman -Syu --needed "${official[@]}"
 if ((${#aur[@]})); then "$helper" -S --needed "${aur[@]}"; fi
 if command -v rustup >/dev/null && ! rustup show active-toolchain >/dev/null 2>&1; then rustup default stable; fi
-if command -v rustup >/dev/null; then rustup component add rustfmt rust-analyzer; fi
+if command -v rustup >/dev/null; then rustup component add rustfmt rust-analyzer clippy; fi
 if $build_ags; then "$root/scripts/build-legacy-ags.sh"; fi
 if $build_waybar; then "$root/scripts/build-waybar.sh"; fi
 echo 'Dependencies installed. Run ./restore.sh --dry-run before restoring configs.'

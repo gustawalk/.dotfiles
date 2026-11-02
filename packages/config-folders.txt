@@ -12,3 +12,4 @@ ags
 qt5ct
 qt6ct
 btop
+zed

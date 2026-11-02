@@ -116,3 +116,7 @@ libsoup3
 gnome-bluetooth-3.0
 accountsservice
 libnotify
+
+zed
+
+television

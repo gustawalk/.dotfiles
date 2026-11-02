@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+"""Open Television file or text selections in the existing Zed window."""
+from pathlib import Path
+import subprocess
+import shutil
+import sys
+
+
+def main():
+    channel = sys.argv[1] if len(sys.argv) > 1 else "files"
+    if channel not in ("files", "text"):
+        raise SystemExit("Usage: television-open [files|text]")
+    result = subprocess.run(
+        [shutil.which("tv") or str(Path.home() / ".local/bin/tv"), channel,
+         '--keybindings=enter="confirm_selection"'],
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    if result.returncode in (1, 130):
+        return 0
+    if result.returncode:
+        return result.returncode
+    selections = [str(Path.cwd() / item) for item in result.stdout.splitlines() if item]
+    if not selections:
+        return 0
+    return subprocess.run(["/usr/bin/zeditor", "--existing", "--", *selections]).returncode
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
