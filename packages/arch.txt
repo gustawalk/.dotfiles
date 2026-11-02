@@ -19,6 +19,7 @@ clang
 gdb
 rustup
 python
+lua
 # Desktop, clipboard, screenshots, media and file management
 hyprland
 hyprlock
