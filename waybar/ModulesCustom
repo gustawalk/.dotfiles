@@ -16,6 +16,7 @@
 	"tooltip": true,
 },
 
+// Watch actual LED changes and read the compositor state on each change.
 "custom/capslock": {
   "exec": "$HOME/.config/hypr/UserScripts/Capslock.sh",
   "return-type": "json",

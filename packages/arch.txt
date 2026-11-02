@@ -79,6 +79,7 @@ qt5ct
 qt6ct
 kvantum
 qt6-svg
+python-evdev
 python-requests
 python-pyquery
 fcitx5
