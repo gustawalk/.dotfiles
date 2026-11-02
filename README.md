@@ -1,7 +1,7 @@
 # Dotfiles
 
 Working Arch Linux rice snapshot, synchronized on 2026-10-31. Includes Hyprland
-Lua, Kitty, Fish, Waybar, Neovim, tmux, Rofi, SwayNC, Wallust, Wlogout, AGS,
+Lua, Kitty, Fish, Waybar, Neovim, Zed, tmux, Rofi, SwayNC, Wallust, Wlogout, AGS,
 Qt theme settings and btop. Six Pokémon banner sprites and tmux-resurrect are
 bundled so they do not depend on a previous home directory.
 
@@ -96,6 +96,34 @@ before formatting the PC. Test restore in a disposable account or VM first.
 - Hyprland starts Fcitx5; select your keyboard/input methods after login.
 - `fish/fish_variables`, histories, caches, secrets, credentials, and archived
   backups are excluded. Save passwords/SSH keys separately using encrypted backups.
+
+## Zed
+
+`zed/` includes current JSONC settings, Vim keybindings, tasks and the
+`bin/television-open` helper. It is included in `restore.sh`; Arch dependencies
+include `zed` (the `zeditor` executable) and `television` (`tv`). The helper uses
+`tv` from PATH, falling back to the original `~/.local/bin/tv` location.
+
+Zed's settings request the configured theme/icon extensions automatically. The
+local `themes/` directory was empty. The previous settings backup, credentials,
+application cache and workspace state are not included. Tasks retain the existing
+`/home/walk/.config/zed` path; review it if restoring under a different username.
+The Rust check configuration uses Clippy (`rustup component add clippy`).
+
+## Caps Lock indicator
+
+The active bar uses `custom/capslock` via `hypr/UserScripts/Capslock.py` and
+`python-evdev`. It blocks on actual Caps Lock LED events and keyboard device
+lifecycle changes, then reads the main keyboard state from Hyprland. Ordinary
+keypresses are masked out in the kernel. There is no timed polling; one helper
+runs per bar and queries `hyprctl` only at startup or on a relevant event.
+
+This avoids a Waybar 0.15.0 native keyboard-state race: bars can sample LED state
+on key release before the compositor applies the change, leaving monitors with
+opposite indicators. `大` means Caps Lock on, `小` means off. Existing device
+access is required; the installer does not change input permissions.
+
+Regression checks: `python hypr/tests/test_capslock.py`.
 
 ## Compatibility and validation
 
