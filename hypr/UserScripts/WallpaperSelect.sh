@@ -1,7 +1,7 @@
 #!/bin/bash
 # This script for selecting wallpapers (SUPER W)
 
-MAIN_MONITOR="DP-1"
+MAIN_MONITOR="${WALLPAPER_MONITOR:-$(hyprctl -j monitors | jq -r '(map(select(.focused)) + .)[0].name // empty')}"
 
 # WALLPAPERS PATH
 terminal=kitty

@@ -1,31 +1,19 @@
-#!/bin/bash
-# For disabling touchpad.
-# Edit the Touchpad_Device on ~/.config/hypr/UserConfigs/Laptops.conf according to your system
-# use hyprctl devices to get your system touchpad device name
-# source https://github.com/hyprwm/Hyprland/discussions/4283?sort=new#discussioncomment-8648109
-
-notif="$HOME/.config/swaync/images/ja.png"
-
-export STATUS_FILE="$XDG_RUNTIME_DIR/touchpad.status"
-
-enable_touchpad() {
-    printf "true" >"$STATUS_FILE"
-    notify-send -u low -i $notif  " Enabling" " touchpad"
-    hyprctl reload
-}
-
-disable_touchpad() {
-    printf "false" >"$STATUS_FILE"
-    notify-send -u low -i $notif " Disabling" " touchpad"
-    hyprctl reload
-}
-
-if ! [ -f "$STATUS_FILE" ]; then
-  enable_touchpad
-else
-  if [ $(cat "$STATUS_FILE") = "true" ]; then
-    disable_touchpad
-  elif [ $(cat "$STATUS_FILE") = "false" ]; then
-    enable_touchpad
-  fi
+#!/usr/bin/env bash
+# Toggle touchpads discovered in the current compositor session.
+set -euo pipefail
+status_file="${XDG_RUNTIME_DIR:?}/touchpad.status"
+enabled=false
+if [[ -f $status_file && $(<"$status_file") == false ]]; then
+  enabled=true
 fi
+devices=$(hyprctl -j devices | jq -r '.mice[] | select(.name | test("touchpad"; "i")) | .name')
+[[ -n $devices ]] || { notify-send 'No touchpad detected'; exit 0; }
+commands=''
+while IFS= read -r device; do
+  # Names become Lua string literals; reject unexpected characters.
+  [[ $device =~ ^[a-zA-Z0-9:_.\ -]+$ ]] || exit 1
+  commands+="hl.device({ name = \"$device\", enabled = $enabled }); "
+done <<< "$devices"
+hyprctl eval "$commands"
+printf '%s' "$enabled" > "$status_file"
+notify-send -u low 'Touchpad' "Enabled: $enabled"

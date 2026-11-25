@@ -40,7 +40,7 @@ local function each_setting(path, cb)
 end
 local function fields(s)
 	local t = {}
-	for item in s:gmatch("[^,]+") do
+	for item in (s .. ","):gmatch("(.-),") do
 		t[#t + 1] = item:match("^%s*(.-)%s*$")
 	end
 	return t
@@ -73,14 +73,16 @@ if status_path then
 		status:close()
 	end
 end
-hl.device({ name = "asue1209:00-04f3:319f-touchpad", enabled = touchpad_enabled })
+local touchpad = os.getenv("DOTFILES_TOUCHPAD")
+if touchpad and touchpad ~= "" then
+	hl.device({ name = touchpad, enabled = touchpad_enabled })
+end
 
 -- Environment, including the values formerly in ENVariables.conf.
 local env = {
 	{ "GDK_BACKEND", "wayland,x11,*" },
 	{ "QT_QPA_PLATFORM", "wayland;xcb" },
 	{ "CLUTTER_BACKEND", "wayland" },
-	{ "WLR_NO_HARDWARE_CURSORS", "1" },
 	{ "XDG_CURRENT_DESKTOP", "Hyprland" },
 	{ "XDG_SESSION_DESKTOP", "Hyprland" },
 	{ "XDG_SESSION_TYPE", "wayland" },
@@ -95,11 +97,6 @@ local env = {
 	{ "HYPRCURSOR_SIZE", "24" },
 	{ "MOZ_ENABLE_WAYLAND", "1" },
 	{ "ELECTRON_OZONE_PLATFORM_HINT", "auto" },
-	{ "LIBVA_DRIVER_NAME", "nvidia" },
-	{ "__GLX_VENDOR_LIBRARY_NAME", "nvidia" },
-	{ "NVD_BACKEND", "direct" },
-	{ "GBM_BACKEND", "nvidia-drm" },
-	{ "WLR_DRM_NO_ATOMIC", "1" },
 	{ "EDITOR", "nvim" },
 }
 for _, pair in ipairs(env) do
@@ -193,7 +190,6 @@ hl.config({
 	render = { direct_scanout = 0 },
 	cursor = {
 		sync_gsettings_theme = true,
-		no_hardware_cursors = 1,
 		enable_hyprcursor = true,
 		warp_on_change_workspace = 0,
 		no_warps = true,
@@ -495,3 +491,11 @@ hl.bind(
 	hl.dsp.exec_cmd(script_command("scripts/SwitchKeyboardLayout.sh")),
 	{ locked = true, non_consuming = true }
 )
+
+-- Per-machine adjustments are intentionally not tracked by Git.
+local local_config = root .. "/local.lua"
+local local_file = io.open(local_config)
+if local_file then
+	local_file:close()
+	dofile(local_config)
+end

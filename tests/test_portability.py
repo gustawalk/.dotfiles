@@ -31,6 +31,33 @@ dofile(arg[1])
 
 
 class PortabilityTests(unittest.TestCase):
+    def test_lua_uses_generic_hardware_and_loads_local_overrides(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            home = Path(tmp)
+            hypr = home / ".config/hypr"
+            hypr.mkdir(parents=True)
+            (hypr / "monitors.conf").write_text("monitor=,preferred,auto,1\n")
+            (hypr / "local.lua").write_text('print("local override loaded")\n')
+            capture = LUA_CAPTURE.replace('-- Exercise the actual config', '''
+hl.monitor = function(spec)
+    assert(spec.output == "" and spec.mode == "preferred")
+    print("generic monitor")
+end
+hl.env = function(key, value)
+    assert(value ~= "nvidia" and value ~= "nvidia-drm")
+    assert(key ~= "VK_ICD_FILENAMES")
+end
+hl.device = function() error("unexpected fixed device") end
+-- Exercise the actual config''')
+            env = dict(os.environ, HOME=str(home))
+            env.pop("DOTFILES_TOUCHPAD", None)
+            output = subprocess.check_output(
+                ["lua", "-", str(ROOT / "hypr/hyprland.lua")],
+                input=capture, text=True, env=env,
+            )
+            self.assertIn("generic monitor", output)
+            self.assertIn("local override loaded", output)
+
     def test_hyprland_launcher_uses_current_home_and_quotes_it(self):
         for name in ("another-user", "different user's $home"):
             with self.subTest(home=name), tempfile.TemporaryDirectory() as tmp:
@@ -48,6 +75,33 @@ class PortabilityTests(unittest.TestCase):
                 self.assertEqual(subprocess.check_output(
                     ["sh", "-c", command], env=env, text=True,
                 ), "portable launcher")
+
+    def test_touchpad_toggle_discovers_current_device(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            binary = root / "bin"
+            binary.mkdir()
+            (binary / "hyprctl").write_text('''#!/bin/sh
+if [ "$1" = "-j" ]; then
+  printf '%s' '{"mice":[{"name":"another-vendor-touchpad"},{"name":"usb-mouse"}]}'
+else
+  printf '%s' "$2"
+fi
+''')
+            (binary / "notify-send").write_text("#!/bin/sh\nexit 0\n")
+            for command in binary.iterdir():
+                command.chmod(0o755)
+            env = dict(os.environ, XDG_RUNTIME_DIR=tmp,
+                       PATH=str(binary) + os.pathsep + os.defpath)
+            for expected in ("false", "true"):
+                result = subprocess.check_output(
+                    ["bash", str(ROOT / "hypr/scripts/TouchPad.sh")],
+                    env=env, text=True,
+                )
+                self.assertIn('name = "another-vendor-touchpad"', result)
+                self.assertIn("enabled = " + expected, result)
+                self.assertNotIn("usb-mouse", result)
+                self.assertEqual((root / "touchpad.status").read_text(), expected)
 
     def test_zed_tasks_find_helper_under_current_home(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -70,6 +124,9 @@ class PortabilityTests(unittest.TestCase):
         binary.parent.mkdir(parents=True, exist_ok=True)
         binary.write_text("#!/bin/sh\nprintf '%s\\n' \"$@\"\n")
         binary.chmod(0o755)
+        hyprctl = binary.parent / "hyprctl"
+        hyprctl.write_text("#!/bin/sh\nprintf '%s' '[{\"name\":\"eDP-2\",\"focused\":true}]'\n")
+        hyprctl.chmod(0o755)
         env = dict(os.environ, HOME=str(home), PATH=str(binary.parent) + os.pathsep + os.defpath)
         for name in ("GSR_OUTPUT_DIR", "GSR_MONITOR", "GSR_CODEC"):
             env.pop(name, None)
@@ -85,6 +142,7 @@ class PortabilityTests(unittest.TestCase):
             destination = home / "Videos/Clips"
             self.assertEqual(args[args.index("-o") + 1], str(destination))
             self.assertTrue(destination.is_dir())
+            self.assertEqual(args[args.index("-w") + 1], "eDP-2")
 
     def test_recording_accepts_machine_local_overrides(self):
         with tempfile.TemporaryDirectory() as tmp:

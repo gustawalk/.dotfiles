@@ -14,3 +14,5 @@ rofi/.current_wallpaper
 backups/
 # Externally mounted, machine-specific development integration.
 fish/conf.d/unity-cli.fish
+fish/conf.d/local.fish
+hypr/local.lua
