@@ -68,11 +68,10 @@ editor versions required by these configs. No Ubuntu installation was tested.
   optional recording tools require separate Ubuntu installation. Arch/AUR
   package names cannot be passed directly to apt. The Caps Lock helper needs
   Ubuntu's `python3-evdev` and permission to read the relevant input devices.
-- Before restoring onto a laptop, adapt `hypr/monitors.conf` and
-  `hypr/workspaces.conf` (currently HDMI-A-1/DP-1), the touchpad name in Lua,
-  and NVIDIA environment overrides in Lua and `fish/conf.d/nvidia-hypr.fish`.
-  Do not force NVIDIA variables onto an Intel/AMD-only laptop. Recording also
-  defaults to DP-1. Wallpapers and theme assets need separate installation.
+- Hardware defaults now use automatic monitor placement and driver selection,
+  with no connector-specific workspace assignments. The touchpad toggle discovers
+  device names; recording and wallpaper selection choose the focused monitor.
+  Wallpapers and theme assets still need separate installation.
 - `restore.sh` always links every folder in `packages/config-folders.txt`,
   including Hyprland. For shell/editor-only use on Ubuntu/GNOME, back up and
   link only the individual configs whose dependencies you have prepared.
@@ -118,9 +117,20 @@ first. Personal files, credentials and wallpapers need separate backups.
   from Lua's `os.getenv("HOME")`; Zed tasks use quoted `$HOME` expansion. Restore
   works under another username without editing those paths. Waybar selection
   symlinks are relative, so they do not contain the original home directory.
-- Review `hypr/monitors.conf`, `workspaces.conf`, `UserConfigs/LaptopDisplay.conf`,
-  and the NVIDIA environment in Lua and `fish/conf.d/nvidia-hypr.fish` for new
-  hardware. These are saved as your current baseline, not universally portable defaults.
+- Displays default to preferred modes, automatic placement and scale 1. Adjust
+  scale for HiDPI screens. Workspaces are not pinned to named connectors; GPU
+  backends are selected by the installed drivers. The touchpad toggle discovers
+  devices dynamically (the name must contain "touchpad"). Its state is session-local;
+  set `DOTFILES_TOUCHPAD` to a device name if Lua should reapply saved state on reload.
+- Put optional machine-specific Hyprland settings in `hypr/local.lua`, loaded
+  last, and shell settings in `fish/conf.d/local.fish`. Both are Git-ignored.
+  For example, use `hl.monitor({ output = "your-output", mode = "preferred",
+  position = "auto", scale = 1.5 })` in local.lua for a specific HiDPI display.
+  These local files need separate backup. Existing live configs on this PC are
+  separate copies; updating the repository does not change its current hardware setup.
+- Old Fish universal NVIDIA variables from a previous restore persist even after
+  removing their definitions. On a migrated install, inspect `set -U` and erase
+  obsolete GPU overrides with `set -eU VARIABLE`; new installs do not set them.
 - Wallpaper files under `~/Pictures/wallpapers`, the Flat Remix GTK/icon themes,
   and Bibata cursors under `~/.themes` and `~/.icons` are outside `.config`.
   Back up wallpapers separately. The AUR manifest includes the theme packages;
@@ -137,7 +147,7 @@ first. Personal files, credentials and wallpapers need separate backups.
 - The replay-buffer keybinds expect `gpu-screen-recorder.service` and
   `~/.local/bin/gsr-start.sh`, which are saved under `extras/`. Recordings default
   to `$HOME/Videos/Clips` (created automatically). Set `GSR_OUTPUT_DIR` for a custom
-  disk, `GSR_MONITOR` for another monitor (default `DP-1`), or `GSR_CODEC` for
+  disk, `GSR_MONITOR` for a fixed monitor (default: focused, then first available), or `GSR_CODEC` for
   another codec (default `h264`) in the service environment using
   `systemctl --user edit gpu-screen-recorder.service`. Copy the files to the
   documented locations, then run `systemctl --user daemon-reload`. They are not
