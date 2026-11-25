@@ -44,6 +44,50 @@ chosen by the script.
 The older shell/editor installer for Debian, Fedora and macOS remains available
 as `./install-portable.sh --dry-run`. The complete desktop restore targets Arch.
 
+## Ubuntu compatibility (reviewed 2026-11-25)
+
+The full desktop setup is not an Ubuntu installer. `install-prerequisites.sh`
+requires pacman; `install-portable.sh` detects Ubuntu as Debian and installs only
+shell/editor/language packages. It does not install this desktop or ensure the
+editor versions required by these configs. No Ubuntu installation was tested.
+
+- Ubuntu 26.10 packages Hyprland 0.56.2, matching this Lua configuration's
+  baseline. Earlier Ubuntu releases need a separately maintained compatible
+  Hyprland stack; the legacy `.conf` files are not an equivalent fallback.
+  See [Hyprland installation](https://wiki.hypr.land/getting-started/installation/)
+  and [Ubuntu's package](https://packages.ubuntu.com/stonking/hyprland).
+- `nvim/DEPENDENCIES.md` requires Neovim 0.12+ and tree-sitter-cli 0.26.1+.
+  Ubuntu 24.04 ships Neovim 0.9.5; installing the apt package alone is insufficient.
+  Verify versions and install compatible upstream builds before restoring Neovim.
+  See [Ubuntu 24.04 package](https://packages.ubuntu.com/noble/editors/neovim).
+- Rebuild `waybar/bin/waybar` on Ubuntu with the required development libraries;
+  the bundled Arch x86_64 binary is not guaranteed to match Ubuntu's ABI or CPU.
+  The build script does not install Ubuntu build dependencies. AGS must remain
+  v1.9.0; modern AGS is incompatible with these modules.
+- Desktop dependencies, themes, fonts, wallpaper tools, Zed, Television and
+  optional recording tools require separate Ubuntu installation. Arch/AUR
+  package names cannot be passed directly to apt. The Caps Lock helper needs
+  Ubuntu's `python3-evdev` and permission to read the relevant input devices.
+- Before restoring onto a laptop, adapt `hypr/monitors.conf` and
+  `hypr/workspaces.conf` (currently HDMI-A-1/DP-1), the touchpad name in Lua,
+  and NVIDIA environment overrides in Lua and `fish/conf.d/nvidia-hypr.fish`.
+  Do not force NVIDIA variables onto an Intel/AMD-only laptop. Recording also
+  defaults to DP-1. Wallpapers and theme assets need separate installation.
+- `restore.sh` always links every folder in `packages/config-folders.txt`,
+  including Hyprland. For shell/editor-only use on Ubuntu/GNOME, back up and
+  link only the individual configs whose dependencies you have prepared.
+
+Preview the portable package plan without installing anything:
+
+```bash
+./install-portable.sh --os debian --dry-run
+```
+
+Before a full desktop restore, install compatible desktop dependencies, adapt
+the hardware settings, run `./restore.sh --dry-run`, and validate the Lua config
+with the actual Ubuntu Hyprland installation. A clean Ubuntu VM/laptop test is
+still required before claiming full compatibility.
+
 ## Restore and maintain
 
 `restore.sh` reads `packages/config-folders.txt` and links those directories into
